@@ -10,8 +10,20 @@ from pathlib import Path
 from typing import Callable, Dict
 
 from instance import Instance
+from point import Point
+from distance import Distance
 from solution import Solution
 from file_wrappers import StdinFileWrapper, StdoutFileWrapper
+import numpy as np
+
+
+# def within_dist(point, cities, dist):
+#     within = []
+#     for i in range(len(cities)):
+#         if (Point.distance_obj(point, cities[i]) <= dist):
+#             within.append(cities[i])
+#     return within
+            
 
 
 def solve_naive(instance: Instance) -> Solution:
@@ -19,6 +31,29 @@ def solve_naive(instance: Instance) -> Solution:
         instance=instance,
         towers=instance.cities,
     )
+
+# Goal is to greedily add tower that covers the most cities
+def solve_greedy(instance: Instance) -> Solution:
+    # Need a way to QUICKLY access point of highest coverage
+    # Need to be able to REMOVE a city from ALL point's coverage
+
+    # Graph implementation, nodes == cities/points, edges == connections
+    
+
+        
+
+
+        
+    
+
+
+    
+
+    return Solution(
+        instance=instance,
+        towers=instance.cities,
+    )
+
 
 
 SOLVERS: Dict[str, Callable[[Instance], Solution]] = {
