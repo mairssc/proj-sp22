@@ -41,40 +41,32 @@ def solve_greedy(instance: Instance) -> Solution:
 
     # points indexed by row, col. number represents cities it covers
     grid = np.zeros((side_len, side_len))
+    city_points = [[] for i in range(len(hold_cities))]
     towers = []
     for i in range(side_len):
         for j in range(side_len):
             cur_point = Point(i, j)
             for k in range(len(hold_cities)):
                 if within_dist(cur_point, hold_cities[k], instance.coverage_radius):
+                    # If point (i, j) can reach city k, add point to city_points
+                    city_points[k].append((i, j))
                     grid[i, j] += 1
     
 
     # Remove cities covered by the "max tower" each iteration and update the grid
+    h = hold_cities.copy()
     while len(hold_cities) != 0:
         max_i, max_j = np.unravel_index(np.argmax(grid, axis=None), grid.shape)
         max_point = Point(max_i, max_j)
 
         towers.append(max_point)
-        h = hold_cities.copy()
-
-
+        # removes covered cities from hold_cities 
         for k in range(len(h)):
-            if within_dist(max_point, h[k], instance.coverage_radius):
+            if within_dist(max_point, h[k], instance.coverage_radius) and h[k] in hold_cities:
                 hold_cities.remove(h[k])
-
-
-        # Update grid
-        for i in range(side_len):
-            for j in range(side_len):
-                cur_point = Point(i, j)
-                # Set all grid points to 0
-                grid[i, j] = 0
-
-                # Update cities within range
-                for k in range(len(hold_cities)):
-                    if within_dist(cur_point, hold_cities[k], instance.coverage_radius):
-                        grid[i, j] += 1
+                # If removed city, decrement value of points that cover removed city
+                for point in city_points[k]:
+                    grid[point[0], point[1]] -= 1
 
     return Solution(
         instance=instance,
