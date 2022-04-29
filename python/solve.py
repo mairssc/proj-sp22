@@ -36,11 +36,11 @@ def solve_greedy(instance: Instance) -> Solution:
     # Need to be able to REMOVE a city from ALL point's coverage
     # Given cities, dimensions, radius of tower, etc.
 
-    side_len = instance.grid_side_length
+    side_len = instance.D
     hold_cities = instance.cities.copy()
 
     # points indexed by row, col. number represents cities it covers
-    grid = np.zeros(side_len, side_len)
+    grid = np.zeros((side_len, side_len))
     towers = []
     for i in range(side_len):
         for j in range(side_len):
@@ -49,16 +49,32 @@ def solve_greedy(instance: Instance) -> Solution:
                 if within_dist(cur_point, hold_cities[k], instance.coverage_radius):
                     grid[i, j] += 1
     
+
     # Remove cities covered by the "max tower" each iteration and update the grid
     while len(hold_cities) != 0:
         max_i, max_j = np.unravel_index(np.argmax(grid, axis=None), grid.shape)
         max_point = Point(max_i, max_j)
+
         towers.append(max_point)
-        for k in range(len(hold_cities)):
-            if within_dist(cur_point, hold_cities[k], instance.coverage_radius):
-                hold_cities.remove(hold_cities[k])
+        h = hold_cities.copy()
+
+
+        for k in range(len(h)):
+            if within_dist(max_point, h[k], instance.coverage_radius):
+                hold_cities.remove(h[k])
+
 
         # Update grid
+        for i in range(side_len):
+            for j in range(side_len):
+                cur_point = Point(i, j)
+                # Set all grid points to 0
+                grid[i, j] = 0
+
+                # Update cities within range
+                for k in range(len(hold_cities)):
+                    if within_dist(cur_point, hold_cities[k], instance.coverage_radius):
+                        grid[i, j] += 1
 
     return Solution(
         instance=instance,
@@ -68,7 +84,8 @@ def solve_greedy(instance: Instance) -> Solution:
 
 
 SOLVERS: Dict[str, Callable[[Instance], Solution]] = {
-    "naive": solve_naive
+    "naive": solve_naive,
+    "greedy": solve_greedy
 }
 
 
