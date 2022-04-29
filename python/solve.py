@@ -17,13 +17,11 @@ from file_wrappers import StdinFileWrapper, StdoutFileWrapper
 import numpy as np
 
 
-# def within_dist(point, cities, dist):
-#     within = []
-#     for i in range(len(cities)):
-#         if (Point.distance_obj(point, cities[i]) <= dist):
-#             within.append(cities[i])
-#     return within
-            
+# Returns whether the point is within the dist of a city
+def within_dist(point, city, dist):
+    return Point.distance_obj(point, city) <= dist
+
+
 
 
 def solve_naive(instance: Instance) -> Solution:
@@ -36,22 +34,35 @@ def solve_naive(instance: Instance) -> Solution:
 def solve_greedy(instance: Instance) -> Solution:
     # Need a way to QUICKLY access point of highest coverage
     # Need to be able to REMOVE a city from ALL point's coverage
+    # Given cities, dimensions, radius of tower, etc.
 
-    # Graph implementation, nodes == cities/points, edges == connections
+    side_len = instance.grid_side_length
+    hold_cities = instance.cities.copy()
+
+    # points indexed by row, col. number represents cities it covers
+    grid = np.zeros(side_len, side_len)
+    towers = []
+    for i in range(side_len):
+        for j in range(side_len):
+            cur_point = Point(i, j)
+            for k in range(len(hold_cities)):
+                if within_dist(cur_point, hold_cities[k], instance.coverage_radius):
+                    grid[i, j] += 1
     
+    # Remove cities covered by the "max tower" each iteration and update the grid
+    while len(hold_cities) != 0:
+        max_i, max_j = np.unravel_index(np.argmax(grid, axis=None), grid.shape)
+        max_point = Point(max_i, max_j)
+        towers.append(max_point)
+        for k in range(len(hold_cities)):
+            if within_dist(cur_point, hold_cities[k], instance.coverage_radius):
+                hold_cities.remove(hold_cities[k])
 
-        
-
-
-        
-    
-
-
-    
+        # Update grid
 
     return Solution(
         instance=instance,
-        towers=instance.cities,
+        towers=towers,
     )
 
 
