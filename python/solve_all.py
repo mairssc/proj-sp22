@@ -22,6 +22,7 @@ from solution import Solution
 from solve import solve_greedy
 from solve import solve_random
 from solve import solve_greedy2
+from solve import solve_greedy3
 
 
 class Size(enum.Enum):
@@ -34,11 +35,11 @@ def solver(size: Size, instance: Instance) -> Solution:
     # Modify this function to use your imported solvers.
     # YOUR CODE HERE
     if size == Size.SMALL:
-        return solve_random(instance)
+        return solve_greedy3(instance)
     elif size == Size.MEDIUM:
-        return solve_random(instance)
+        return solve_greedy3(instance)
     elif size == Size.LARGE:
-        return solve_random(instance)
+        return solve_greedy3(instance)
 
 
 # You shouldn't need to modify anything below this line.
