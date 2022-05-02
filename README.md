@@ -22,4 +22,5 @@ python python/solve_all.py inputs test4
 
 python python/merge.py --inputs inputs test test4 test
 
+# put test in tarfile
 python3 -m tarfile -c outputs.tar test
